@@ -1,0 +1,52 @@
+Table Users {
+  userId int [pk, increment]
+  username varchar
+  password varchar
+  role varchar
+}
+
+Table Profiles {
+  profileId int [pk, increment]
+  userId int [unique]
+  fullName varchar
+}
+
+// 1:1 Relationship
+Ref: Users.userId - Profiles.userId [delete: cascade]
+
+Table Categories {
+  categoryId int [pk, increment]
+  name varchar
+}
+
+Table MenuItems {
+  menuItemId int [pk, increment]
+  categoryId int
+  name varchar
+  price decimal
+}
+
+// 1:N Relationship
+Ref: Categories.categoryId < MenuItems.categoryId
+
+Table Transactions {
+  transactionId int [pk, increment]
+  userId int
+  tableNumber varchar
+  total decimal
+}
+
+// 1:N Relatio  nship
+Ref: Users.userId < Transactions.userId
+
+Table OrderItems {
+  orderItemId int [pk, increment]
+  transactionId int
+  menuItemId int
+  quantity int
+  price int
+}
+
+// N:M Relationship
+Ref: Transactions.transactionId < OrderItems.transactionId
+Ref: MenuItems.menuItemId < OrderItems.menuItemId

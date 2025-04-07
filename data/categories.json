@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Food & Beverage",
+    "createdAt": "2025-04-01T00:00:00.000Z",
+    "updatedAt": "2025-04-01T00:00:00.000Z"
+  },
+  {
+    "name": "Snacks",
+    "createdAt": "2025-04-02T00:00:00.000Z",
+    "updatedAt": "2025-04-02T00:00:00.000Z"
+  },
+  {
+    "name": "Hot Drinks",
+    "createdAt": "2025-04-03T00:00:00.000Z",
+    "updatedAt": "2025-04-03T00:00:00.000Z"
+  },
+  {
+    "name": "Cold Drinks",
+    "createdAt": "2025-04-04T00:00:00.000Z",
+    "updatedAt": "2025-04-04T00:00:00.000Z"
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "username": "zian",
+    "password": "Pwd123!",
+    "role": "owner",
+    "createdAt": "2025-04-01T00:00:00.000Z",
+    "updatedAt": "2025-04-01T00:00:00.000Z"
+  },
+  {
+    "username": "jane_smith",
+    "password": "Pwd123!",
+    "role": "staff",
+    "createdAt": "2025-04-02T00:00:00.000Z",
+    "updatedAt": "2025-04-02T00:00:00.000Z"
+  },
+  {
+    "username": "alice_wonderland",
+    "password": "Pwd123!",
+    "role": "staff",
+    "createdAt": "2025-04-03T00:00:00.000Z",
+    "updatedAt": "2025-04-03T00:00:00.000Z"
+  },
+  {
+    "username": "bob_builder",
+    "password": "Pwd123!",
+    "role": "owner",
+    "createdAt": "2025-04-04T00:00:00.000Z",
+    "updatedAt": "2025-04-04T00:00:00.000Z"
+  }
+]
