@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>BoltPOS - Detail Menu</title>
+
+    <%- include("../templates/CustomLink") %>
+  </head>
+
+  <body id="page-top">
+    <div id="wrapper">
+      <%- include("../templates/Sidebar") %>
+
+      <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+          <%- include("../templates/Topbar") %>
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <div class="card shadow mb-4">
+                  <div
+                    class="card-header d-flex justify-content-between align-items-center"
+                  >
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Detail Menu
+                    </h6>
+                    <a href="/menus" class="btn btn-secondary btn-sm"
+                      >Kembali</a
+                    >
+                  </div>
+                  <div class="card-body">
+                    <div class="text-center mb-4">
+                      <img src="<%= menu.imageFile ? "/uploads/" +
+                      menu.imageFile : "/uploads/default.jpg" %> " alt="Gambar
+                      Menu" class="img-fluid rounded" style="max-height: 250px"
+                      />
+                    </div>
+
+                    <h5><strong>Nama Menu:</strong> <%= menu.name %></h5>
+                    <h5>
+                      <strong>Harga:</strong> Rp <%= menu.getRupiahPrice %>
+                    </h5>
+                    <h5>
+                      <strong>Status:</strong>
+                      <% if (menu.isAvailable) { %>
+                      <span class="badge badge-success">Tersedia</span>
+                      <% } else { %>
+                      <span class="badge badge-danger">Habis</span>
+                      <% } %>
+                    </h5>
+                    <h5>
+                      <strong>Kategori:</strong>
+                      <a
+                        href="/categories/<%= menu.category.categoryId %>/detail"
+                        ><%= menu.category?.name%></a
+                      >
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <%- include("../templates/Footer") %>
+      </div>
+    </div>
+
+    <%- include("../templates/Script") %>
+  </body>
+</html>

@@ -20,8 +20,15 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
+      customerName: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+        validate: {
+          len: [2, 100],
+        },
+      },
       total: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
       },

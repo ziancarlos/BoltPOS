@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>BoltPOS - Data Transaksi</title>
+
+    <%- include("../templates/CustomLink") %>
+    <link
+      href="/vendor/datatables/dataTables.bootstrap4.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body id="page-top">
+    <div id="wrapper">
+      <%- include("../templates/Sidebar") %>
+
+      <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+          <%- include("../templates/Topbar") %>
+
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-8">
+                <div class="card shadow mb-4">
+                  <div class="card-body">
+                    <form method="GET" action="/menus/search" class="mb-4">
+                      <div class="form-row align-items-end">
+                        <div class="col-md-4">
+                          <label for="category"
+                            >Cari berdasarkan Kategori</label
+                          >
+                          <select
+                            class="form-control"
+                            id="category"
+                            name="categoryId"
+                          >
+                            <option value="">Semua Kategori</option>
+                            <% categories.forEach(category => { %>
+                            <option value="<%= category.categoryId %>">
+                              <%= category.name %>
+                            </option>
+                            <% }) %>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="search">Cari berdasarkan Nama</label>
+                          <input
+                            type="text"
+                            id="search"
+                            name="search"
+                            class="form-control"
+                            placeholder="Cari nama menu"
+                          />
+                        </div>
+                      </div>
+                    </form>
+
+                    <div class="row">
+                      <% menus.forEach(menu => { %>
+                      <div class="col-4 mb-3" id="<%= menu.menuId %>">
+                        <div class="card">
+                          <img src="<%= menu.imageFile ? "/uploads/" +
+                          menu.imageFile : "/uploads/default.jpg" %>"
+                          class="card-img-top" alt="..." />
+                          <div class="card-body">
+                            <h5 class="card-title"><%= menu.name %></h5>
+                            <h5 class="card-title">
+                              Rp. <%= menu.getRupiahPrice %>
+                            </h5>
+                            <p class="card-text">
+                              <strong>Kategori:</strong>
+                              <a
+                                href="/categories/<%= menu.category.categoryId %>/detail"
+                                ><%= menu.category?.name%></a
+                              >
+                            </p>
+                            <a href="#" class="btn btn-primary">Add</a>
+                          </div>
+                        </div>
+                      </div>
+                      <% }) %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Tambah Menu
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <% if (errors) { %> <% errors.forEach(({ message }) => { %>
+                    <div
+                      class="alert alert-danger alert-dismissible fade show"
+                      role="alert"
+                    >
+                      <%= message %>
+                    </div>
+                    <% }) %> <% } %>
+                    <form
+                      action="/transactions/new"
+                      method="POST"
+                      id="menuForm"
+                    >
+                      <div class="form-group">
+                        <label for="name">Nama Kustomer</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="name"
+                          name="customerName"
+                          placeholder="Masukkan nama customer"
+                          required
+                        />
+                      </div>
+
+                      <div class="form-group">
+                        <label for="paymentMethod">Metode Pembayaran</label>
+                        <select
+                          class="form-control"
+                          id="paymentMethod"
+                          name="paymentMethod"
+                          required
+                        >
+                          <option value="">Pilih Metode</option>
+                          <option value="Cash">CASH</option>
+                          <option value="QRIS">QRIS</option>
+                          <option value="Transfer">TRANSFER</option>
+                          <option value="Kartu Debit">KARTU DEBIT</option>
+                          <option value="Kartu Kredit">KARTU KREDIT</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="price">Catatan</label>
+                        <textarea
+                          class="form-control"
+                          name="notes"
+                          id="notes"
+                        ></textarea>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="price">Total Harga</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="totalPrice"
+                          name="price"
+                          disabled
+                          required
+                        />
+                      </div>
+
+                      <div class="form-group">
+                        <div class="table-responsive">
+                          <table
+                            class="table table-bordered"
+                            id="dataTable"
+                            width="100%"
+                            cellspacing="0"
+                          >
+                            <thead>
+                              <tr>
+                                <th>Nama Menu</th>
+                                <th>Harga</th>
+                                <th>Kuantitas</th>
+                                <th>Aksi</th>
+                              </tr>
+                            </thead>
+                            <tfoot>
+                              <tr>
+                                <th>Nama Menu</th>
+                                <th>Harga</th>
+                                <th>Kuantitas</th>
+                                <th>Aksi</th>
+                              </tr>
+                            </tfoot>
+                            <tbody></tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      <input type="hidden" name="items" id="itemsJson" />
+
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="saveBtn"
+                      >
+                        <i class="fas fa-save"></i>
+                      </button>
+                      <button
+                        type="button"
+                        id="cancelBtn"
+                        class="btn btn-secondary"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <%- include("../templates/Footer") %>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      const categorySelect = document.getElementById("category");
+      const searchInput = document.getElementById("search");
+
+      async function fetchMenus() {
+        const categoryId = categorySelect.value;
+        const search = searchInput.value;
+
+        try {
+          const res = await fetch(
+            `/transactions/menus/ajax?categoryId=${categoryId}&search=${search}`
+          );
+          const data = await res.json();
+
+          if (data.success) {
+            const container = document.querySelector(
+              ".row .col-8 .card-body .row"
+            );
+            container.innerHTML = ""; // Clear existing cards
+
+            data.menus.forEach((menu) => {
+              const card = document.createElement("div");
+              card.className = "col-4 mb-3";
+              card.id = menu.menuId;
+
+              card.innerHTML = `
+                  <div class="card">
+                    <img src="${
+                      menu.imageFile
+                        ? "/uploads/" + menu.imageFile
+                        : "/uploads/default.jpg"
+                    }"
+                      class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title">${menu.name}</h5>
+                      <h5 class="card-title">Rp. ${menu.price.toLocaleString()}</h5>
+                      <p class="card-text">
+                        <strong>Kategori:</strong>
+                        <a href="/categories/${
+                          menu.category.categoryId
+                        }/detail">${menu.category.name}</a>
+                      </p>
+                      <a href="#" class="btn btn-primary">Add</a>
+                    </div>
+                  </div>
+                `;
+
+              container.appendChild(card);
+            });
+
+            // Reattach event listeners to new buttons
+            attachAddButtonListeners();
+          }
+        } catch (err) {
+          console.error("Error fetching menus:", err);
+        }
+      }
+
+      function attachAddButtonListeners() {
+        document.querySelectorAll(".btn.btn-primary").forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const card = btn.closest(".card");
+            const menuId = card.parentElement.id;
+            const menuName = card.querySelector(".card-title").innerText;
+            const priceText = card.querySelectorAll(".card-title")[1].innerText;
+            const price = parseInt(priceText.replace(/[^\d]/g, ""));
+
+            // Add menu if not exists
+            if (!selectedMenus[menuId]) {
+              selectedMenus[menuId] = {
+                name: menuName,
+                price: price,
+                quantity: 1,
+              };
+            } else {
+              selectedMenus[menuId].quantity += 1;
+            }
+
+            renderTable();
+            updateTotalPrice();
+          });
+        });
+      }
+
+      categorySelect.addEventListener("change", fetchMenus);
+      searchInput.addEventListener("input", debounce(fetchMenus, 300));
+
+      function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+      }
+    </script>
+
+    <script>
+      const selectedMenus = {};
+
+      // Initial attachment of event listeners
+      document.addEventListener("DOMContentLoaded", function () {
+        attachAddButtonListeners();
+      });
+
+      function renderTable() {
+        const tbody = document.querySelector("#dataTable tbody");
+        tbody.innerHTML = "";
+
+        Object.keys(selectedMenus).forEach((menuId) => {
+          const item = selectedMenus[menuId];
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+              <td>${item.name}</td>
+              <td>Rp ${item.price.toLocaleString("id-ID")}</td>
+              <td>${item.quantity}</td>
+              <td><button class="btn btn-danger btn-sm" onclick="removeMenu('${menuId}')">Hapus</button></td>
+            `;
+
+          tbody.appendChild(row);
+        });
+
+        // Update hidden input with JSON data
+        document.getElementById("itemsJson").value =
+          JSON.stringify(selectedMenus);
+      }
+
+      function removeMenu(menuId) {
+        delete selectedMenus[menuId];
+        renderTable();
+        updateTotalPrice();
+      }
+
+      function updateTotalPrice() {
+        let total = 0;
+        Object.values(selectedMenus).forEach((item) => {
+          total += item.price * item.quantity;
+        });
+
+        const inputTotal = document.querySelector("#totalPrice");
+        inputTotal.value = "Rp " + total.toLocaleString("id-ID");
+      }
+
+      // Save button functionality
+      document
+        .getElementById("saveBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // Convert selectedMenus to array format
+          const itemsArray = Object.keys(selectedMenus).map((menuId) => ({
+            menuId: menuId,
+            price: selectedMenus[menuId].price,
+            quantity: selectedMenus[menuId].quantity,
+          }));
+
+          // If no items selected, warn and stop
+          if (itemsArray.length === 0) {
+            Swal.fire({
+              icon: "warning",
+              title: "Tidak ada menu",
+              text: "Silakan tambahkan menu terlebih dahulu.",
+            });
+            return;
+          }
+
+          Swal.fire({
+            title: "Konfirmasi Transaksi",
+            text: "Apakah Anda yakin ingin menyimpan transaksi ini?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, simpan",
+            cancelButtonText: "Batal",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Update the hidden input with properly formatted JSON
+              document.getElementById("itemsJson").value =
+                JSON.stringify(itemsArray);
+
+              // Submit the form
+              document.getElementById("menuForm").submit();
+            }
+          });
+        });
+
+      // Cancel button functionality
+      document
+        .getElementById("cancelBtn")
+        .addEventListener("click", function () {
+          // Clear all selected items
+          for (const key in selectedMenus) {
+            delete selectedMenus[key];
+          }
+          renderTable();
+          updateTotalPrice();
+          document.getElementById("menuForm").reset();
+        });
+    </script>
+
+    <%- include("../templates/Script") %>
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="/js/demo/datatables-demo.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Transaction.belongsTo(models.User, {
         foreignKey: "userId",
-        as: "cashier",
+        as: "user",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
@@ -46,10 +46,25 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      total: {
-        type: DataTypes.DECIMAL(12, 2),
+
+      customerName: {
+        type: DataTypes.STRING(100),
         allowNull: false,
-        defaultValue: 0.0,
+        validate: {
+          len: {
+            args: [2, 100],
+            msg: "Nama Kustomer lengkap harus terdiri dari 2-100 karakter",
+          },
+          notEmpty: {
+            msg: "Nama Kustomer tidak boleh kosong",
+          },
+        },
+      },
+
+      total: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
         validate: {
           isDecimal: {
             msg: "Total harus berupa angka desimal",

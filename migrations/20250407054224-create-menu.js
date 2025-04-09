@@ -23,12 +23,13 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
         validate: {
           len: [3, 100],
         },
       },
       price: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       createdAt: {

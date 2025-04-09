@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "transactionMenus",
       });
     }
+
+    get getRupiahPrice() {
+      return this.price.toLocaleString();
+    }
   }
 
   Menu.init(
@@ -64,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       price: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
           isDecimal: {
@@ -82,10 +86,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       imageFile: {
         type: DataTypes.STRING(255),
+        allowNull: true,
         validate: {
-          notEmpty: {
-            msg: "File gambar tidak boleh kosong",
-          },
           is: {
             args: /\.(jpg|jpeg|png|webp)$/i,
             msg: "Format file harus JPG, JPEG, PNG, atau WEBP",
@@ -109,9 +111,6 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "Menus",
       timestamps: true,
       underscored: false,
-      defaultScope: {
-        where: { isAvailable: true },
-      },
       hooks: {
         beforeValidate: (menu) => {
           if (menu.name) {

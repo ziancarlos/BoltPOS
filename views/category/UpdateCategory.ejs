@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>BoltPOS - Ubah Kategori</title>
+
+    <!-- Custom fonts for this template-->
+    <%- include("../templates/CustomLink") %>
+  </head>
+
+  <body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <%- include("../templates/Sidebar") %>
+
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+          <%- include("../templates/Topbar") %>
+
+          <!-- Begin Page Content -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Tambah Kategori
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <% if (errors) { %> <% errors.forEach(({message}) => { %>
+                    <div
+                      class="alert alert-danger alert-dismissible fade show"
+                      role="alert"
+                    >
+                      <%= message %>
+                    </div>
+                    <% }) %> <% } %>
+
+                    <form
+                      action="/categories/<%= category.categoryId %>/edit"
+                      method="POST"
+                      id="categoryForm"
+                    >
+                      <div class="form-group">
+                        <label for="name">Nama Kategori</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="name"
+                          name="name"
+                          value="<%= category.name %>"
+                          placeholder="Masukkan nama kategori"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        id="saveBtn"
+                        class="btn btn-primary"
+                      >
+                        <i class="fas fa-save"></i>
+                      </button>
+                      <button
+                        type="button"
+                        id="cancelBtn"
+                        class="btn btn-secondary"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End of Main Content -->
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+          const form = document.getElementById("categoryForm");
+          const saveBtn = document.getElementById("saveBtn");
+          const cancelBtn = document.getElementById("cancelBtn");
+
+          saveBtn.addEventListener("click", function (e) {
+            Swal.fire({
+              title: "Yakin ingin mengubah?",
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonText: "Ya, Ubah",
+              cancelButtonText: "Batal",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                form.submit();
+              }
+            });
+          });
+
+          cancelBtn.addEventListener("click", function () {
+            Swal.fire({
+              title: "Yakin ingin membatalkan?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Ya, Batalkan",
+              cancelButtonText: "Kembali",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "/categories";
+              }
+            });
+          });
+        </script>
+
+        <%- include("../templates/Footer") %>
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <%- include("../templates/Script") %>
+  </body>
+</html>

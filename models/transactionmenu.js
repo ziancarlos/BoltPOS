@@ -95,15 +95,6 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      notes: {
-        type: DataTypes.TEXT,
-        validate: {
-          len: {
-            args: [0, 500],
-            msg: "Catatan tidak boleh lebih dari 500 karakter",
-          },
-        },
-      },
       subtotal: {
         // Virtual field
         type: DataTypes.VIRTUAL,

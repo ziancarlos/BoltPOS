@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
     static associate(models) {
       Category.hasMany(models.Menu, {
-        foreignKey: "menuId",
+        foreignKey: "categoryId",
         as: "menus",
         onDelete: "RESTRICT", // Prevent delete if menu items exist
         onUpdate: "CASCADE",

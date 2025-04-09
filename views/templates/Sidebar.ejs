@@ -1,0 +1,208 @@
+<!-- sidebar.ejs -->
+<ul
+  class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+  id="accordionSidebar"
+>
+  <!-- Sidebar - Brand -->
+  <a
+    class="sidebar-brand d-flex align-items-center justify-content-center"
+    href="/dashboard"
+  >
+    <div class="sidebar-brand-icon rotate-n-15">
+      <i class="fas fa-chart-area"></i>
+    </div>
+    <div class="sidebar-brand-text mx-3">Bolt<sup>POS</sup></div>
+  </a>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0" />
+
+  <!-- Dashboard -->
+  <li class="nav-item <%= currentPath === '/dashboard' ? 'active' : '' %>">
+    <a class="nav-link" href="/dashboard">
+      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <span>Dashboard</span>
+    </a>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider" />
+
+  <!-- Kategori Pengguna -->
+  <li class="nav-item <%= currentPath.startsWith('/users') ? 'active' : '' %>">
+    <a
+      class="nav-link collapsed"
+      href="#"
+      data-toggle="collapse"
+      data-target="#collapsePengguna"
+      aria-expanded="<%= currentPath.startsWith('/users') ? 'true' : 'false' %>"
+    >
+      <i class="fas fa-fw fa-users"></i>
+      <span>Pengguna</span>
+    </a>
+    <div
+      id="collapsePengguna"
+      class="collapse <%= currentPath.startsWith('/users') ? 'show' : '' %>"
+      data-parent="#accordionSidebar"
+    >
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a
+          class="collapse-item <%= currentPath === '/users' ? 'active' : '' %>"
+          href="/users"
+        >
+          Data Pengguna
+        </a>
+        <a
+          class="collapse-item <%= currentPath === '/users/add' ? 'active' : '' %>"
+          href="/users/add"
+        >
+          Tambah Pengguna
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Kategori Menu -->
+  <li
+    class="nav-item <%= currentPath.startsWith('/categories') ? 'active' : '' %>"
+  >
+    <a
+      class="nav-link collapsed"
+      href="#"
+      data-toggle="collapse"
+      data-target="#collapseKategori"
+      aria-expanded="<%= currentPath.startsWith('/categories') ? 'true' : 'false' %>"
+    >
+      <i class="fas fa-fw fa-tags"></i>
+      <span>Kategori</span>
+    </a>
+    <div
+      id="collapseKategori"
+      class="collapse <%= currentPath.startsWith('/categories') ? 'show' : '' %>"
+      data-parent="#accordionSidebar"
+    >
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a
+          class="collapse-item <%= currentPath === '/categories' ? 'active' : '' %>"
+          href="/categories"
+        >
+          Data Kategori
+        </a>
+        <a
+          class="collapse-item <%= currentPath === '/categories/add' ? 'active' : '' %>"
+          href="/categories/add"
+        >
+          Tambah Kategori
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Menu Menu -->
+  <li class="nav-item <%= currentPath.startsWith('/menus') ? 'active' : '' %>">
+    <a
+      class="nav-link collapsed"
+      href="#"
+      data-toggle="collapse"
+      data-target="#collapseMenu"
+      aria-expanded="<%= currentPath.startsWith('/menus') ? 'true' : 'false' %>"
+    >
+      <i class="fas fa-fw fa-utensils"></i>
+      <span>Menu</span>
+    </a>
+    <div
+      id="collapseMenu"
+      class="collapse <%= currentPath.startsWith('/menus') ? 'show' : '' %>"
+      data-parent="#accordionSidebar"
+    >
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a
+          class="collapse-item <%= currentPath === '/menu' ? 'active' : '' %>"
+          href="/menus"
+        >
+          Data Menu
+        </a>
+        <a
+          class="collapse-item <%= currentPath === '/menus/add' ? 'active' : '' %>"
+          href="/menus/add"
+        >
+          Tambah Menu
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Transaksi Menu -->
+  <li
+    class="nav-item <%= currentPath.startsWith('/transactions') ? 'active' : '' %>"
+  >
+    <a
+      class="nav-link collapsed"
+      href="#"
+      data-toggle="collapse"
+      data-target="#collapseTransaksi"
+      aria-expanded="<%= currentPath.startsWith('/transactions') ? 'true' : 'false' %>"
+    >
+      <i class="fas fa-fw fa-cash-register"></i>
+      <span>Transaksi</span>
+    </a>
+    <div
+      id="collapseTransaksi"
+      class="collapse <%= currentPath.startsWith('/transactions') ? 'show' : '' %>"
+      data-parent="#accordionSidebar"
+    >
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a
+          class="collapse-item <%= currentPath === '/transactions' ? 'active' : '' %>"
+          href="/transactions"
+        >
+          Data Transaksi
+        </a>
+        <a
+          class="collapse-item <%= currentPath === '/transactions/new' ? 'active' : '' %>"
+          href="/transactions/new"
+        >
+          Transaksi Baru
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Laporan Menu -->
+  <li
+    class="nav-item <%= currentPath.startsWith('/reports') ? 'active' : '' %>"
+  >
+    <a
+      class="nav-link collapsed"
+      href="#"
+      data-toggle="collapse"
+      data-target="#collapseLaporan"
+      aria-expanded="<%= currentPath.startsWith('/reports') ? 'true' : 'false' %>"
+    >
+      <i class="fas fa-fw fa-chart-bar"></i>
+      <span>Laporan</span>
+    </a>
+    <div
+      id="collapseLaporan"
+      class="collapse <%= currentPath.startsWith('/reports') ? 'show' : '' %>"
+      data-parent="#accordionSidebar"
+    >
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a
+          class="collapse-item <%= currentPath === '/reports/financial' ? 'active' : '' %>"
+          href="/reports/financial"
+        >
+          Laporan Keuangan
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider d-none d-md-block" />
+
+  <!-- Sidebar Toggler (Sidebar) -->
+  <div class="text-center d-none d-md-inline">
+    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+  </div>
+</ul>

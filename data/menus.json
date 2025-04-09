@@ -2,8 +2,7 @@
   {
     "categoryId": 1,
     "name": "Nasi Goreng Spesial",
-    "price": 25000.0,
-    "imageFile": "nasi-goreng.jpg",
+    "price": 250000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:00:00Z",
     "updatedAt": "2024-04-01T10:00:00Z"
@@ -11,8 +10,7 @@
   {
     "categoryId": 1,
     "name": "Mie Ayam Bakso",
-    "price": 22000.0,
-    "imageFile": "mie-ayam-bakso.png",
+    "price": 220000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:05:00Z",
     "updatedAt": "2024-04-01T10:05:00Z"
@@ -20,8 +18,7 @@
   {
     "categoryId": 1,
     "name": "Sate Ayam",
-    "price": 30000.0,
-    "imageFile": "sate-ayam.jpeg",
+    "price": 300000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:10:00Z",
     "updatedAt": "2024-04-01T10:10:00Z"
@@ -29,8 +26,7 @@
   {
     "categoryId": 1,
     "name": "Ayam Geprek",
-    "price": 23000.0,
-    "imageFile": "ayam-geprek.jpg",
+    "price": 230000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:15:00Z",
     "updatedAt": "2024-04-01T10:15:00Z"
@@ -38,8 +34,7 @@
   {
     "categoryId": 2,
     "name": "Keripik Kentang",
-    "price": 10000.0,
-    "imageFile": "keripik-kentang.png",
+    "price": 100000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:20:00Z",
     "updatedAt": "2024-04-01T10:20:00Z"
@@ -47,8 +42,7 @@
   {
     "categoryId": 2,
     "name": "Tahu Crispy",
-    "price": 9000.0,
-    "imageFile": "tahu-crispy.jpg",
+    "price": 90000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:25:00Z",
     "updatedAt": "2024-04-01T10:25:00Z"
@@ -56,8 +50,7 @@
   {
     "categoryId": 2,
     "name": "Pisang Coklat",
-    "price": 12000.0,
-    "imageFile": "pisang-coklat.jpeg",
+    "price": 120000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:30:00Z",
     "updatedAt": "2024-04-01T10:30:00Z"
@@ -65,8 +58,7 @@
   {
     "categoryId": 3,
     "name": "Kopi Hitam",
-    "price": 12000.0,
-    "imageFile": "kopi-hitam.webp",
+    "price": 120000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:35:00Z",
     "updatedAt": "2024-04-01T10:35:00Z"
@@ -74,8 +66,7 @@
   {
     "categoryId": 3,
     "name": "Cappuccino",
-    "price": 15000.0,
-    "imageFile": "cappuccino.png",
+    "price": 150000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:40:00Z",
     "updatedAt": "2024-04-01T10:40:00Z"
@@ -83,8 +74,7 @@
   {
     "categoryId": 3,
     "name": "Thai Tea",
-    "price": 14000.0,
-    "imageFile": "thai-tea.jpg",
+    "price": 140000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:45:00Z",
     "updatedAt": "2024-04-01T10:45:00Z"
@@ -92,8 +82,7 @@
   {
     "categoryId": 4,
     "name": "Es Teh Manis",
-    "price": 8000.0,
-    "imageFile": "es-teh.jpeg",
+    "price": 80000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:50:00Z",
     "updatedAt": "2024-04-01T10:50:00Z"
@@ -101,8 +90,7 @@
   {
     "categoryId": 4,
     "name": "Air Mineral",
-    "price": 5000.0,
-    "imageFile": "air-mineral.jpg",
+    "price": 50000,
     "isAvailable": true,
     "createdAt": "2024-04-01T10:55:00Z",
     "updatedAt": "2024-04-01T10:55:00Z"
