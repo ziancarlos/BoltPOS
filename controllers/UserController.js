@@ -1,4 +1,4 @@
-const { User, Sequelize } = require("../models");
+const { User, Sequelize, Profile } = require("../models");
 const {
   setSuccessAlert,
   receiveSuccessAlert,
@@ -13,7 +13,7 @@ const { createValidation } = require("../validations/UserValidation");
 
 class UserController {
   static async getAll(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     const successMessage = receiveSuccessAlert(req);
     const errorMessage = receiveErrorAlert(req);
@@ -33,17 +33,16 @@ class UserController {
         users,
         successMessage,
         errorMessage,
-        user: { userId, username, role },
+        user: { userId, username, role, fullName },
         currentPath,
       });
     } catch (e) {
-      console.log(e);
       next(e);
     }
   }
 
   static async createForm(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     let { errors } = req.query;
 
@@ -55,11 +54,9 @@ class UserController {
       }
     }
 
-    console.log(errors);
-
     try {
       res.render("user/CreateUser", {
-        user: { userId, username, role },
+        user: { userId, username, role, fullName },
         currentPath,
         errors,
       });
@@ -81,7 +78,11 @@ class UserController {
       );
 
       try {
-        await User.create({ username, password, role });
+        const user = await User.create({ username, password, role });
+        await Profile.create({
+          userId: user.dataValues.userId,
+          fullName: null,
+        });
       } catch (e) {
         throw new AlertError(e.errors, "/users/add");
       }
@@ -94,7 +95,7 @@ class UserController {
   }
 
   static async updateForm(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     let { errors } = req.query;
 
@@ -121,7 +122,7 @@ class UserController {
 
       res.render("user/UpdateUser", {
         targetUser,
-        user: { userId, username, role },
+        user: { userId, username, role, fullName },
         currentPath,
         errors,
       });
@@ -176,7 +177,7 @@ class UserController {
   }
 
   static async updateProfileForm(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     let { errors } = req.query;
 
@@ -189,7 +190,16 @@ class UserController {
     }
 
     try {
-      const targetUser = await User.findByPk(userId);
+      const targetUser = await User.findOne({
+        where: {
+          userId,
+        },
+        include: {
+          model: Profile,
+          as: "profile",
+          required: false,
+        },
+      });
 
       if (!targetUser) {
         throw new SwalError("User tidak ditemukan.", "/dashboard");
@@ -197,7 +207,7 @@ class UserController {
 
       res.render("UpdateProfile", {
         targetUser,
-        user: { userId, username, role },
+        user: { userId, username, role, fullName },
         currentPath,
         errors,
       });
@@ -209,42 +219,70 @@ class UserController {
 
   static async updateProfile(req, res, next) {
     try {
-      let { userId: targetId } = req.params;
+      let { userId: targetId } = req.user;
       targetId = validate(userIdValidation, targetId, (message) => {
         throw new SwalError(message[0].message, "/dashboard");
       });
 
-      const { username, password, role } = req.body;
+      const { username, password, fullName } = req.body;
 
-      const targetUser = await User.findByPk(targetId);
+      const targetUser = await User.findOne({
+        where: {
+          userId: targetId, // Changed from targetId to id to match the where clause
+        },
+        include: {
+          model: Profile,
+          as: "profile",
+          required: false,
+        },
+      });
 
       if (!targetUser) {
         throw new SwalError("Pengguna tidak ditemukan.", "/dashboard");
       }
 
-      if (
+      // Check if there are any changes
+      const noChanges =
         targetUser.username === username &&
-        (!password || password.trim() === "")
-      ) {
+        (!password || password.trim() === "") &&
+        (!fullName ||
+          fullName.trim() === "" ||
+          (targetUser.profile && targetUser.profile.fullName === fullName));
+
+      if (noChanges) {
         throw new AlertError(
           [{ message: "Tidak menemukan perubahaan apapun." }],
           `/profile`
         );
       }
 
+      // Update user fields
       targetUser.username = username;
       if (password && password.trim() !== "") {
         targetUser.password = password;
       }
 
       try {
+        // Save user changes
         await targetUser.save();
+
+        if (fullName && fullName.trim() !== "") {
+          if (targetUser.profile) {
+            targetUser.profile.fullName = fullName;
+            await targetUser.profile.save();
+          } else {
+            await Profile.create({
+              userId: targetId,
+              fullName: fullName,
+            });
+          }
+        }
       } catch (e) {
         throw new AlertError(e.errors, `/profile`);
       }
 
       setSuccessAlert(req, "Berhasil mengubah profil.");
-      res.redirect("/profile");
+      res.redirect("/dashboard");
     } catch (e) {
       console.log(e);
       next(e);

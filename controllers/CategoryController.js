@@ -12,7 +12,7 @@ const AlertError = require("../errors/AlertError");
 
 class CategoryController {
   static async getAll(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     const successMessage = receiveSuccessAlert(req);
     const errorMessage = receiveErrorAlert(req);
@@ -45,6 +45,7 @@ class CategoryController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
       });
@@ -54,7 +55,7 @@ class CategoryController {
   }
 
   static async get(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
 
     try {
@@ -64,16 +65,7 @@ class CategoryController {
         throw new SwalError(message[0].message, "/categories");
       });
 
-      const category = await Category.findOne({
-        where: {
-          categoryId,
-        },
-        include: {
-          model: Menu,
-          as: "menus",
-          attributes: ["menuId", "name", "price", "isAvailable"],
-        },
-      });
+      const category = await Category.getCategoryById(categoryId);
 
       if (!category) {
         throw new SwalError("Tidak menemukan kategori.", "/categories");
@@ -86,6 +78,7 @@ class CategoryController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
       });
@@ -95,7 +88,7 @@ class CategoryController {
   }
 
   static async createForm(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     let { errors } = req.query;
 
@@ -113,6 +106,7 @@ class CategoryController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
         errors,
@@ -141,7 +135,7 @@ class CategoryController {
   }
 
   static async updateForm(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     let { errors } = req.query;
 
@@ -172,6 +166,7 @@ class CategoryController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
         errors,

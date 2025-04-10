@@ -4,6 +4,18 @@ const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
+    static async getCategoryById(categoryId) {
+      return await Category.findOne({
+        where: {
+          categoryId,
+        },
+        include: {
+          model: this.sequelize.models.Menu,
+          as: "menus",
+          attributes: ["menuId", "name", "price", "isAvailable"],
+        },
+      });
+    }
     static associate(models) {
       Category.hasMany(models.Menu, {
         foreignKey: "categoryId",

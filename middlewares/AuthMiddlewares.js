@@ -1,35 +1,55 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { User, Profile } = require("../models");
 const SECRET_KEY = process.env.SECRET_KEY;
 
 module.exports = async function AuthMiddleware(req, res, next) {
   try {
-    // const { accessToken } = req.session;
+    const { accessToken } = req.session;
 
-    // if (!accessToken) {
-    //   return res.redirect("/login?error=Anda Belum Login 1.");
-    // }
+    // If no access token, redirect to login
+    if (!accessToken) {
+      return res.redirect("/login?error=Please login first");
+    }
 
-    // let payload;
-    // try {
-    //   payload = jwt.verify(accessToken, SECRET_KEY);
-    // } catch (e) {
-    //   return res.redirect("/login?error=Anda Belum Login 2.");
-    // }
+    // Verify token
+    let payload;
+    try {
+      payload = jwt.verify(accessToken, SECRET_KEY);
+    } catch (e) {
+      // Clear invalid token
+      delete req.session.accessToken;
+      return res.redirect("/login?error=Session expired, please login again");
+    }
 
-    // const user = await User.findByPk(payload.userId);
-    // if (!user.username) {
-    //   return res.redirect("/login?error=Anda Belum Login 3.");
-    // }
+    // Check user exists
+    const user = await User.findOne({
+      where: {
+        userId: payload.userId,
+      },
+      include: {
+        model: Profile,
+        as: "profile",
+        required: false,
+      },
+    });
+    if (!user) {
+      delete req.session.accessToken;
+      return res.redirect("/login?error=User not found");
+    }
 
+    // Attach user to request
     req.user = {
-      userId: 1,
-      role: "OWNER",
-      username: "Zian",
+      userId: user.userId,
+      role: user.role,
+      username: user.username,
+      fullName: user?.profile?.fullName
+        ? user?.profile?.fullName
+        : user.username,
     };
-  } catch (e) {
-    return res.redirect(`/login?error=${e}`);
-  }
 
-  next();
+    next();
+  } catch (e) {
+    console.log(e);
+    return res.redirect(`/login?error=Authentication error`);
+  }
 };

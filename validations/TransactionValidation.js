@@ -64,6 +64,12 @@ const createValidation = Joi.object({
     }),
 });
 
+const transactionIdValidation = Joi.number().required().messages({
+  "number.base": "Id Transaksi harus berupa angka",
+  "any.required": "Id Transaksi wajib diberikan",
+});
+
 module.exports = {
   createValidation,
+  transactionIdValidation,
 };

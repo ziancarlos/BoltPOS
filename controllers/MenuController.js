@@ -17,7 +17,7 @@ const AlertError = require("../errors/AlertError");
 
 class MenuController {
   static async getAll(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     const successMessage = receiveSuccessAlert(req);
     const errorMessage = receiveErrorAlert(req);
@@ -46,6 +46,7 @@ class MenuController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
       });
@@ -56,7 +57,7 @@ class MenuController {
   }
 
   static async get(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
 
     try {
@@ -87,6 +88,7 @@ class MenuController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
       });
@@ -96,7 +98,7 @@ class MenuController {
   }
 
   static async createForm(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     let { errors } = req.query;
 
@@ -118,6 +120,7 @@ class MenuController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
         errors,
@@ -172,7 +175,7 @@ class MenuController {
   }
 
   static async updateForm(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     let { errors } = req.query;
 
@@ -213,6 +216,7 @@ class MenuController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
         errors,

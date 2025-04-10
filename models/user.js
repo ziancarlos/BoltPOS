@@ -67,14 +67,6 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: {
             msg: "Password tidak boleh kosong",
           },
-          isStrongPassword(value) {
-            if (!User.isPasswordValid(value)) {
-              throw new Error(
-                "Password harus mengandung: " +
-                  "1 huruf besar, 1 huruf kecil, 1 angka, dan 1 karakter khusus (@$!%*?&)"
-              );
-            }
-          },
         },
       },
       role: {

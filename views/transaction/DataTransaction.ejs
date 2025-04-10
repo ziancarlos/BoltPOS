@@ -75,25 +75,7 @@
                             <td><%= trx.customerName %></td>
                             <td>Rp <%= trx.total.toLocaleString("id-ID") %></td>
                             <td><%= trx.paymentMethod || '-' %></td>
-                            <td>
-                              <% if (trx.status === 'SELESAI') { %>
-                              <span class="badge badge-success"
-                                ><%= trx.status %></span
-                              >
-                              <% } else if (trx.status === 'PROSES') { %>
-                              <span class="badge badge-warning text-dark"
-                                ><%= trx.status %></span
-                              >
-                              <% } else if (trx.status === 'DIBATALKAN') { %>
-                              <span class="badge badge-danger"
-                                ><%= trx.status %></span
-                              >
-                              <% } else { %>
-                              <span class="badge badge-secondary"
-                                ><%= trx.status %></span
-                              >
-                              <% } %>
-                            </td>
+                            <td><%- trx.showStatus() %></td>
                             <td><%= trx.user?.username || '-' %></td>
                             <td>
                               <%= trx.createdAt.toLocaleDateString("id-ID") %>
@@ -106,7 +88,7 @@
                                 <i class="fas fa-eye"></i>
                               </a>
                               <a
-                                class="btn btn-danger btn-delete-transaction"
+                                class="btn btn-danger btn-cancel-transaction"
                                 href="#"
                                 data-id="<%= trx.transactionId %>"
                               >
@@ -154,5 +136,34 @@
       });
     </script>
     <% } %>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .querySelectorAll(".btn-cancel-transaction")
+          .forEach((button) => {
+            button.addEventListener("click", function (e) {
+              e.preventDefault(); // prevent default link behavior
+              const transactionId = this.dataset.id;
+
+              Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Data yang dibatalkan tidak dapat dikembalikan!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, hapus!",
+                cancelButtonText: "Batal",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Redirect to delete URL
+                  window.location.href = `/transactions/${transactionId}/delete`;
+                }
+              });
+            });
+          });
+      });
+    </script>
   </body>
 </html>

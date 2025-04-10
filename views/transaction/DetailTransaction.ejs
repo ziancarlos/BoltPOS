@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>BoltPOS - Detail Transaksi</title>
+
+    <%- include("../templates/CustomLink") %>
+
+    <link
+      href="/vendor/datatables/dataTables.bootstrap4.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .transaction-summary {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .summary-total {
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-top: 1px solid #dee2e6;
+        padding-top: 10px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+
+  <body id="page-top">
+    <div id="wrapper">
+      <%- include("../templates/Sidebar") %>
+
+      <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+          <%- include("../templates/Topbar") %>
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <div class="card shadow mb-4">
+                  <div
+                    class="card-header py-3 d-flex justify-content-between align-items-center"
+                  >
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Detail Transaksi #<%= transaction.transactionId %>
+                    </h6>
+                    <a href="/transactions" class="btn btn-secondary btn-sm"
+                      >Kembali</a
+                    >
+                  </div>
+                  <div class="card-body">
+                    <div class="transaction-summary">
+                      <div class="summary-item">
+                        <span>Tanggal Transaksi:</span>
+                        <span
+                          ><%= new Date(transaction.createdAt).toLocaleString()
+                          %></span
+                        >
+                      </div>
+                      <div class="summary-item">
+                        <span>Status:</span>
+                        <%- transaction.showStatus() %>
+                      </div>
+                      <div class="summary-item">
+                        <span>Metode Pembayaran:</span>
+                        <span><%= transaction.paymentMethod || '-' %></span>
+                      </div>
+                    </div>
+
+                    <% if (transaction.status === 'PENDING') { %>
+                    <a
+                      href="/transactions/<%= transaction.transactionId %>/status"
+                      class="btn btn-warning mb-3"
+                      >Proses</a
+                    >
+                    <% } else if (transaction.status === 'PROSES') { %>
+                    <a
+                      href="/transactions/<%= transaction.transactionId %>/status"
+                      class="btn btn-success mb-3"
+                      >Selesai</a
+                    >
+                    <% } %>
+                    <h6 class="text-primary font-weight-bold">Daftar Menu</h6>
+                    <div class="table-responsive">
+                      <table
+                        class="table table-bordered"
+                        id="dataTable"
+                        width="100%"
+                        cellspacing="0"
+                      >
+                        <thead>
+                          <tr>
+                            <th>No</th>
+                            <th>Menu</th>
+                            <th>Harga Satuan</th>
+                            <th>Jumlah</th>
+                            <th>Subtotal</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (transaction.menus.length > 0) { %> <% let total
+                          = 0; %> <% transaction.menus.forEach((item, index) =>
+                          { %> <% total += item.subtotal; %>
+                          <tr>
+                            <td><%= index + 1 %></td>
+                            <td>
+                              <div class="d-flex align-items-center">
+                                <div>
+                                  <strong><%= item.menu.name %></strong><br />
+                                  <small class="text-muted"
+                                    >ID: <%= item.menu.menuId %></small
+                                  >
+                                </div>
+                              </div>
+                            </td>
+                            <td><%= item.getRupiahPrice %></td>
+                            <td><%= item.quantity %></td>
+                            <td><%= item.getRupiahSubtotal %></td>
+                          </tr>
+                          <% }) %>
+                          <tr class="bg-light">
+                            <td colspan="4" class="text-right font-weight-bold">
+                              Total
+                            </td>
+                            <td class="font-weight-bold">
+                              <%= transaction.getTotalRupiah %>
+                            </td>
+                          </tr>
+                          <% } else { %>
+                          <tr>
+                            <td colspan="5" class="text-center">
+                              Tidak ada menu dalam transaksi ini.
+                            </td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <% if (transaction.notes) { %>
+                    <div class="mt-4">
+                      <h6 class="text-primary font-weight-bold">Catatan</h6>
+                      <p class="text-muted"><%= transaction.notes %></p>
+                    </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <%- include("../templates/Footer") %>
+      </div>
+    </div>
+
+    <%- include("../templates/Script") %>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- DataTables -->
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="/js/demo/datatables-demo.js"></script>
+
+    <% if (successMessage) { %>
+    <script>
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil!",
+        text: "<%= successMessage %>",
+        confirmButtonColor: "#3085d6",
+      });
+    </script>
+    <% } else if (errorMessage) { %>
+    <script>
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        html: "<%= errorMessage %>",
+        confirmButtonColor: "#3085d6",
+      });
+    </script>
+    <% } %>
+  </body>
+</html>

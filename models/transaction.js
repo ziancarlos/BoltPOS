@@ -7,6 +7,22 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+
+    showStatus() {
+      if (this.status === "SELESAI") {
+        return `<span class="badge badge-success">${this.status}</span>`;
+      } else if (this.status === "PROSES") {
+        return `<span class="badge badge-warning text-dark">${this.status}</span>`;
+      } else if (this.status === "DIBATALKAN") {
+        return `<span class="badge badge-danger"> ${this.status}</span>;`;
+      } else {
+        return `<span class="badge badge-secondary"> ${this.status}</span>`;
+      }
+    }
+
+    get getTotalRupiah() {
+      return `Rp. ${parseInt(this.total).toLocaleString()}`;
+    }
     static associate(models) {
       // define association here
       Transaction.belongsTo(models.User, {
@@ -18,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Transaction.hasMany(models.TransactionMenu, {
         foreignKey: "transactionId",
-        as: "items",
+        as: "menus",
       });
     }
   }

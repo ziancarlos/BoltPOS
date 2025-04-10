@@ -7,8 +7,12 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    getSubtotal() {
-      return this.price * this.quantity;
+    get getRupiahSubtotal() {
+      return `Rp ${parseInt(this.price * this.quantity).toLocaleString()}`;
+    }
+
+    get getRupiahPrice() {
+      return `Rp ${parseInt(this.price).toLocaleString()}`;
     }
 
     static associate(models) {
@@ -83,15 +87,15 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       price: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
           isDecimal: {
             msg: "Harga harus berupa angka desimal",
           },
           min: {
-            args: [0.01],
-            msg: "Harga minimal Rp 0.01",
+            args: 1,
+            msg: "Harga minimal Rp 1",
           },
         },
       },

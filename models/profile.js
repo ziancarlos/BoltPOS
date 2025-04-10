@@ -40,11 +40,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       fullName: {
         type: DataTypes.STRING(100),
-        allowNull: false,
+        allowNull: true,
         validate: {
-          notEmpty: {
-            msg: "Nama lengkap tidak boleh kosong",
-          },
           len: {
             args: [4, 100],
             msg: "Nama lengkap harus terdiri dari 4-100 karakter",

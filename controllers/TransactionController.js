@@ -1,5 +1,9 @@
 const { Op } = require("sequelize");
-const { receiveSuccessAlert, receiveErrorAlert } = require("../helpers/helper");
+const {
+  receiveSuccessAlert,
+  receiveErrorAlert,
+  setSuccessAlert,
+} = require("../helpers/helper");
 const {
   Transaction,
   Menu,
@@ -8,13 +12,17 @@ const {
   sequelize,
   User,
 } = require("../models");
-const { createValidation } = require("../validations/TransactionValidation");
+const {
+  createValidation,
+  transactionIdValidation,
+} = require("../validations/TransactionValidation");
 const validate = require("../validations/validate");
 const AlertError = require("../errors/AlertError");
+const SwalError = require("../errors/SwalError");
 
 class TransactionController {
   static async getAll(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     const successMessage = receiveSuccessAlert(req);
     const errorMessage = receiveErrorAlert(req);
@@ -41,6 +49,66 @@ class TransactionController {
           userId,
           username,
           role,
+          fullName,
+        },
+        currentPath,
+      });
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
+  }
+
+  static async get(req, res, next) {
+    try {
+      const { username, role, userId, fullName } = req.user;
+      const currentPath = req.path;
+      const successMessage = receiveSuccessAlert(req);
+      const errorMessage = receiveErrorAlert(req);
+
+      let { transactionId } = req.params;
+      transactionId = validate(
+        transactionIdValidation,
+        transactionId,
+        (message) => {
+          throw new SwalError(message[0].message, "/transactions");
+        }
+      );
+
+      const transaction = await Transaction.findOne({
+        where: {
+          transactionId,
+        },
+        include: [
+          {
+            model: TransactionMenu,
+            as: "menus",
+            attributes: ["transactionMenuId", "quantity", "price", "subtotal"],
+            include: [
+              {
+                model: Menu, // Assuming your Menu model is named 'Menu'
+                as: "menu", // This should match the association alias you defined
+                attributes: ["menuId", "name", "price"], // Include the menu attributes you need
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!transaction) {
+        throw new SwalError("Tidak menemukan menu.", "/menus");
+      }
+
+      res.render("transaction/DetailTransaction", {
+        transaction,
+        successMessage,
+        errorMessage,
+
+        user: {
+          userId,
+          username,
+          role,
+          fullName,
         },
         currentPath,
       });
@@ -50,7 +118,7 @@ class TransactionController {
   }
 
   static async showCreate(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
     const currentPath = req.path;
     let { errors } = req.query;
 
@@ -86,17 +154,19 @@ class TransactionController {
           userId,
           username,
           role,
+          fullName,
         },
         currentPath,
         errors,
       });
     } catch (e) {
+      console.log(e);
       next(e);
     }
   }
 
   static async create(req, res, next) {
-    const { username, role, userId } = req.user;
+    const { username, role, userId, fullName } = req.user;
 
     const body = req.body;
     body.items = JSON.parse(body.items);
@@ -166,14 +236,19 @@ class TransactionController {
         }));
 
         await TransactionMenu.bulkCreate(transactionItems, { transaction: t });
+
+        setSuccessAlert(req, "Berhasil menambahkan transaksi.");
+
+        res.redirect("/transactions");
       } catch (e) {
-        throw new AlertError(e.errors, `/menus/add`);
+        throw new AlertError(e.errors, `/transactions/new`);
       }
 
       await t.commit();
 
       res.redirect("/transactions");
     } catch (e) {
+      console.log(e);
       await t.rollback();
       next(e);
     }
@@ -208,6 +283,108 @@ class TransactionController {
         success: false,
         message: "Terjadi kesalahan saat memuat menu.",
       });
+    }
+  }
+
+  static async changeStatus(req, res, next) {
+    try {
+      let { transactionId } = req.params;
+
+      transactionId = validate(
+        transactionIdValidation,
+        transactionId,
+        (message) => {
+          throw new SwalError(message[0].message, "/transactions");
+        }
+      );
+
+      // Find the transaction
+      const transaction = await Transaction.findOne({
+        where: { transactionId },
+      });
+
+      if (!transaction) {
+        throw new SwalError("Transaksi tidak ditemukan", "/transactions");
+      }
+
+      // Determine next status
+      let nextStatus;
+      switch (transaction.status) {
+        case "PENDING":
+          nextStatus = "PROSES";
+          break;
+        case "PROSES":
+          nextStatus = "SELESAI";
+          break;
+        case "SELESAI":
+          throw new SwalError(
+            "Transaksi sudah selesai dan tidak dapat diubah lagi",
+            `/transactions/${transactionId}/detail`
+          );
+        case "DIBATALKAN":
+          throw new SwalError(
+            "Transaksi yang dibatalkan tidak dapat diubah statusnya",
+            `/transactions/${transactionId}/detail`
+          );
+        default:
+          throw new SwalError(
+            "Status transaksi tidak valid",
+            `/transactions/${transactionId}/detail`
+          );
+      }
+
+      try {
+        await transaction.update({ status: nextStatus });
+      } catch (e) {
+        throw new SwalError(
+          "Gagal merubah status transaksi.",
+          `/transactions/${transactionId}/detail`
+        );
+      }
+      // Redirect with success message
+      setSuccessAlert(req, "Berhasil mengubah status transaksi.");
+
+      res.redirect(`/transactions/${transactionId}/detail`);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async changeDeleteStatus(req, res, next) {
+    try {
+      let { transactionId } = req.params;
+
+      transactionId = validate(
+        transactionIdValidation,
+        transactionId,
+        (message) => {
+          throw new SwalError(message[0].message, "/transactions");
+        }
+      );
+
+      // Find the transaction
+      const transaction = await Transaction.findOne({
+        where: { transactionId },
+      });
+
+      if (!transaction) {
+        throw new SwalError("Transaksi tidak ditemukan", "/transactions");
+      }
+
+      try {
+        await transaction.update({ status: "DIBATALKAN" });
+      } catch (e) {
+        throw new SwalError(
+          "Gagal merubah status transaksi.",
+          `/transactions/${transactionId}/detail`
+        );
+      }
+      // Redirect with success message
+      setSuccessAlert(req, "Berhasil mengubah status transaksi.");
+
+      res.redirect(`/transactions/${transactionId}/detail`);
+    } catch (error) {
+      next(error);
     }
   }
 }

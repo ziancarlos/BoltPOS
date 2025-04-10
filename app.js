@@ -28,6 +28,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.render("index");
+});
 app.use(AuthRouter);
 app.use(AppRouter);
 
@@ -44,7 +47,7 @@ app.get("/500", (req, res) => {
     currentPath,
   });
 });
-app.get("404", (req, res) => {
+app.get("/404", (req, res) => {
   const { username, role, userId } = req.user;
   const currentPath = req.path;
 
@@ -56,6 +59,10 @@ app.get("404", (req, res) => {
     },
     currentPath,
   });
+});
+
+app.use((req, res) => {
+  res.status(404).redirect("/404");
 });
 
 app.listen(PORT, function (err) {

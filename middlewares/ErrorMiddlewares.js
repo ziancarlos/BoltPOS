@@ -7,16 +7,19 @@ function ErrorMiddleware(err, req, res, next) {
     next();
     return;
   }
-
   console.log(err);
 
   if (err instanceof AlertError) {
-    const messages = JSON.stringify(
-      err.messages.map(({ message }) => ({ message }))
+    const encodedMessages = encodeURIComponent(
+      JSON.stringify(
+        err.messages.map(({ message }) => ({
+          message: message || "Unknown error",
+        }))
+      )
     );
 
     return res.redirect(
-      err.redirect + `?errors=${encodeURIComponent(messages)}`
+      err.redirect + `?errors=${encodeURIComponent(encodedMessages)}`
     );
   } else if (err instanceof SwalError) {
     setErrorAlert(req, err.msg);
